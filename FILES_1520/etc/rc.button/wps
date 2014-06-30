@@ -1,0 +1,23 @@
+#!/bin/sh
+# (c) hackru 07.06.2014
+
+[ "${ACTION}" = "released" ] || exit 0
+
+. /lib/functions.sh
+
+logger "$BUTTON pressed for $SEEN seconds"
+
+if [ "$SEEN" -lt 1 ]
+then
+	message="$BUTTON button pressed for $SEEN seconds, restart network interfaces"
+        echo "$message" > /dev/console
+        logger "$message"
+        /etc/init.d/network restart
+
+elif [ "$SEEN" -gt 5 ]
+then
+	message="$BUTTON button pressed for $SEEN seconds, reboot"
+        echo "$message" > /dev/console
+	logger "$message"
+        reboot &
+fi

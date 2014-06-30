@@ -1,0 +1,17 @@
+config wifi-device  radio0
+        option type     mac80211
+        option channel  11
+        option hwmode   11g
+        option path     '10180000.wmac'
+        option htmode   HT20
+        # REMOVE THIS LINE TO ENABLE WIFI:
+        option disabled 0
+
+config wifi-iface
+	option device 'radio0'
+	option network 'lan'
+	option mode 'ap'
+	option key 'openwrtopenwrt'
+	option encryption 'psk2+ccmp'
+	option ssid 'wt1520'
+
