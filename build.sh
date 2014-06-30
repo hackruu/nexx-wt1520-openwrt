@@ -14,4 +14,4 @@ J=4
 # apply patch if not applied
 test -f target/linux/ramips/dts/NEXXWT1520.dts || patch -p1 < nexx-wt1520.patch
 # compile
-make -j$J image PROFILE="$PROFILE" PACKAGES="$PACKAGES" FILES="FILES_1520"
+make -j$J image PROFILE="$PROFILE" PACKAGES="$PACKAGES" FILES="FILES_1520" && echo firmware is here: "$(pwd)/bin/ramips/openwrt-ramips-rt305x-nexx-wt1520-squashfs-sysupgrade.bin"
