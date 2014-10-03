@@ -1,15 +1,31 @@
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 0000000..2a5a1c1
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,4 @@
-+build_dir
-+tmp
-+packages
-+bin
+diff --git a/target/linux/ramips/base-files/etc/board.d/01_leds b/target/linux/ramips/base-files/etc/board.d/01_leds
+index 01e2363..1806ff2 100755
+--- a/target/linux/ramips/base-files/etc/board.d/01_leds
++++ b/target/linux/ramips/base-files/etc/board.d/01_leds
+@@ -112,6 +112,9 @@ case $board in
+ 	hlk-rm04)
+ 		set_wifi_led "rt2800pci-phy0::radio"
+ 		;;
++	nexx-wt1520)
++		set_wifi_led "rt2800pci-phy0::radio"
++		;;
+ 	all0239-3g|\
+ 	hw550-3g)
+ 		set_usb_led "hw550-3g:green:usb"
+diff --git a/target/linux/ramips/base-files/etc/board.d/02_network b/target/linux/ramips/base-files/etc/board.d/02_network
+index e027b3b..765d398 100755
+--- a/target/linux/ramips/base-files/etc/board.d/02_network
++++ b/target/linux/ramips/base-files/etc/board.d/02_network
+@@ -103,6 +103,7 @@ ramips_setup_interfaces()
+ 	dir-320-b1 | \
+ 	dir-615-h1 | \
+ 	hlk-rm04 | \
++	nexx-wt1520 | \
+ 	mzk-w300nh2 | \
+ 	mzk-750dhp)
+ 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 diff --git a/target/linux/ramips/base-files/etc/diag.sh b/target/linux/ramips/base-files/etc/diag.sh
-index 14d630e..5eb0919 100755
+index 9ad7ccb..472da4b 100755
 --- a/target/linux/ramips/base-files/etc/diag.sh
 +++ b/target/linux/ramips/base-files/etc/diag.sh
 @@ -63,6 +63,9 @@ get_status_led() {
@@ -22,75 +38,25 @@ index 14d630e..5eb0919 100755
  	all0239-3g|\
  	hw550-3g)
  		status_led="hw550-3g:green:status"
-diff --git a/target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom b/target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
-index 904afd1..770e01d 100644
---- a/target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
-+++ b/target/linux/ramips/base-files/etc/hotplug.d/firmware/10-rt2x00-eeprom
-@@ -86,6 +86,7 @@ case "$FIRMWARE" in
- 	rt-n13u | \
- 	freestation5 | \
- 	hlk-rm04 | \
-+	nexx-wt1520 | \
- 	hw550-3g | \
- 	mofi3500-3gn | \
- 	mpr-a1 | \
-diff --git a/target/linux/ramips/base-files/etc/uci-defaults/01_leds b/target/linux/ramips/base-files/etc/uci-defaults/01_leds
-index c5e380c..258d02c 100755
---- a/target/linux/ramips/base-files/etc/uci-defaults/01_leds
-+++ b/target/linux/ramips/base-files/etc/uci-defaults/01_leds
-@@ -109,6 +109,9 @@ case $board in
- 	hlk-rm04)
- 		set_wifi_led "rt2800pci-phy0::radio"
- 		;;
-+	nexx-wt1520)
-+		set_wifi_led "rt2800pci-phy0::radio"
-+		;;
- 	all0239-3g|\
- 	hw550-3g)
- 		set_usb_led "hw550-3g:green:usb"
-diff --git a/target/linux/ramips/base-files/etc/uci-defaults/02_network b/target/linux/ramips/base-files/etc/uci-defaults/02_network
-index 7612857..3cde5b7 100755
---- a/target/linux/ramips/base-files/etc/uci-defaults/02_network
-+++ b/target/linux/ramips/base-files/etc/uci-defaults/02_network
-@@ -96,6 +96,7 @@ ramips_setup_interfaces()
- 	dir-320-b1 | \
- 	dir-615-h1 | \
- 	hlk-rm04 | \
-+	nexx-wt1520 | \
- 	mzk-w300nh2)
- 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
- 		ucidef_add_switch "switch0" "1" "1"
-diff --git a/target/linux/ramips/base-files/lib/preinit/06_set_iface_mac b/target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
-index 8538c13..83fbcde 100644
---- a/target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
-+++ b/target/linux/ramips/base-files/lib/preinit/06_set_iface_mac
-@@ -28,6 +28,7 @@ preinit_set_mac_address() {
- 	esr-9753 |\
- 	freestation5 |\
- 	hlk-rm04 | \
-+	nexx-wt1520 | \
- 	mpr-a1 | \
- 	mpr-a2 | \
- 	dir-300-b7 | \
 diff --git a/target/linux/ramips/base-files/lib/ramips.sh b/target/linux/ramips/base-files/lib/ramips.sh
-index 5d897fc..2f4686b 100755
+index bb42ace..0a09225 100755
 --- a/target/linux/ramips/base-files/lib/ramips.sh
 +++ b/target/linux/ramips/base-files/lib/ramips.sh
-@@ -154,6 +154,9 @@ ramips_board_detect() {
+@@ -157,6 +157,9 @@ ramips_board_detect() {
  	*"HILINK HLK-RM04")
  		name="hlk-rm04"
  		;;
-+	*"NEXX WT1520")
++	*"Nexx WT1520")
 +		name="nexx-wt1520"
 +		;;
  	*"HAME MPR-A1")
   		name="mpr-a1"
   		;;
 diff --git a/target/linux/ramips/base-files/lib/upgrade/platform.sh b/target/linux/ramips/base-files/lib/upgrade/platform.sh
-index a39c433..466eab2 100755
+index 407c218..8ff2da6 100755
 --- a/target/linux/ramips/base-files/lib/upgrade/platform.sh
 +++ b/target/linux/ramips/base-files/lib/upgrade/platform.sh
-@@ -51,6 +51,7 @@ platform_check_image() {
+@@ -52,6 +52,7 @@ platform_check_image() {
  	hw550-3g | \
  	hg255d | \
  	hlk-rm04 | \
@@ -100,17 +66,17 @@ index a39c433..466eab2 100755
  	m4 | \
 diff --git a/target/linux/ramips/dts/NEXXWT1520.dts b/target/linux/ramips/dts/NEXXWT1520.dts
 new file mode 100644
-index 0000000..da189c5
+index 0000000..dc0ad32
 --- /dev/null
 +++ b/target/linux/ramips/dts/NEXXWT1520.dts
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,83 @@
 +/dts-v1/;
 +
 +/include/ "rt5350.dtsi"
 +
 +/ {
 +	compatible = "NEXXWT1520", "ralink,rt5350-soc";
-+	model = "NEXX WT1520";
++	model = "Nexx WT1520";
 +
 +	memory@0 {
 +		device_type = "memory";
@@ -131,7 +97,7 @@ index 0000000..da189c5
 +			m25p80@0 {
 +				#address-cells = <1>;
 +				#size-cells = <1>;
-+				compatible = "gd25q64";
++				compatible = "w25q32";
 +				reg = <0 0>;
 +				linux,modalias = "m25p80", "s25fl064k";
 +				spi-max-frequency = <10000000>;
@@ -186,52 +152,26 @@ index 0000000..da189c5
 +	ohci@101c1000 {
 +		status = "okay";
 +	};
-+
-+	gpio-keys-polled {
-+		compatible = "gpio-keys-polled";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		poll-interval = <20>;
-+	};
-+
-+	gpio-leds {
-+		compatible = "gpio-leds";
-+		power {
-+			label = "nexx-wt1520:white:power";
-+			gpios = <&gpio0 0 1>;
-+		};
-+	};
-+
-+        gpio_export {
-+                compatible = "gpio-export";
-+                #size-cells = <0>;
-+                usb-mode {
-+                        gpio-export,name = "usb-mode";
-+                        gpio-export,output = <0>;
-+                        gpios = <&gpio0 18 0>;
-+                };
-+        };
 +};
 diff --git a/target/linux/ramips/image/Makefile b/target/linux/ramips/image/Makefile
-index 1b342de..287f5a4 100644
+index 35057e4..fcb91af 100644
 --- a/target/linux/ramips/image/Makefile
 +++ b/target/linux/ramips/image/Makefile
-@@ -432,6 +432,14 @@ define BuildFirmware/HLKRM04/initramfs
+@@ -434,6 +434,13 @@ define BuildFirmware/HLKRM04/initramfs
  endef
  Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM02)
- 
+
 +BuildFirmware/NEXXWT1520/squashfs=$(call BuildFirmware/Default4M/squashfs,$(1),$(2),$(3),$(4))
 +define BuildFirmware/NEXXWT1520/initramfs
 +	$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
-+	#mkhilinkfw -e -i$(call imgname,$(1),$(2))-uImage.bin -o $(call imgname,$(1),$(2))-factory.bin;
 +endef
 +
 +Image/Build/Profile/NEXXWT1520=$(call BuildFirmware/NEXXWT1520/$(1),$(1),nexx-wt1520,NEXXWT1520,NEXXWT1520)
 +
  Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
- 
+
  Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
-@@ -588,6 +596,7 @@ define Image/Build/Profile/Default
+@@ -598,6 +605,7 @@ define Image/Build/Profile/Default
  	$(call Image/Build/Profile/FREESTATION5,$(1))
  #	$(call Image/Build/Profile/HG255D,$(1))
  	$(call Image/Build/Profile/HLKRM04,$(1))
@@ -241,7 +181,7 @@ index 1b342de..287f5a4 100644
  	$(call Image/Build/Profile/M3,$(1))
 diff --git a/target/linux/ramips/rt305x/profiles/nexx.mk b/target/linux/ramips/rt305x/profiles/nexx.mk
 new file mode 100644
-index 0000000..74edce9
+index 0000000..45d81ec
 --- /dev/null
 +++ b/target/linux/ramips/rt305x/profiles/nexx.mk
 @@ -0,0 +1,17 @@
@@ -253,7 +193,8 @@ index 0000000..74edce9
 +#
 +
 +define Profile/NEXXWT1520
-+	NAME:=NEXX WT-1520
++	NAME:=Nexx WT1520
++	PACKAGES:=kmod-usb2
 +endef
 +
 +define Profile/NEXXWT1520/Description
@@ -261,5 +202,3 @@ index 0000000..74edce9
 +endef
 +
 +$(eval $(call Profile,NEXXWT1520))
-+
-

@@ -3,7 +3,7 @@ nexx-wt1520-openwrt
 
 How to get your image:
 
-1) download http://downloads.openwrt.org/snapshots/trunk/ramips/OpenWrt-ImageBuilder-ramips_rt305x-for-linux-x86_64.tar.bz2
+1) download http://downloads.openwrt.org/barrier_breaker/14.07/ramips/rt305x/OpenWrt-ImageBuilder-ramips_rt305x-for-linux-x86_64.tar.bz2
 
 2) extract it
 
