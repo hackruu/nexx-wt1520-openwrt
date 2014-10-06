@@ -1,29 +1,3 @@
-diff --git a/target/linux/ramips/base-files/etc/board.d/01_leds b/target/linux/ramips/base-files/etc/board.d/01_leds
-index 01e2363..1806ff2 100755
---- a/target/linux/ramips/base-files/etc/board.d/01_leds
-+++ b/target/linux/ramips/base-files/etc/board.d/01_leds
-@@ -112,6 +112,9 @@ case $board in
- 	hlk-rm04)
- 		set_wifi_led "rt2800pci-phy0::radio"
- 		;;
-+	nexx-wt1520)
-+		set_wifi_led "rt2800pci-phy0::radio"
-+		;;
- 	all0239-3g|\
- 	hw550-3g)
- 		set_usb_led "hw550-3g:green:usb"
-diff --git a/target/linux/ramips/base-files/etc/board.d/02_network b/target/linux/ramips/base-files/etc/board.d/02_network
-index e027b3b..765d398 100755
---- a/target/linux/ramips/base-files/etc/board.d/02_network
-+++ b/target/linux/ramips/base-files/etc/board.d/02_network
-@@ -103,6 +103,7 @@ ramips_setup_interfaces()
- 	dir-320-b1 | \
- 	dir-615-h1 | \
- 	hlk-rm04 | \
-+	nexx-wt1520 | \
- 	mzk-w300nh2 | \
- 	mzk-750dhp)
- 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 diff --git a/target/linux/ramips/base-files/etc/diag.sh b/target/linux/ramips/base-files/etc/diag.sh
 index 9ad7ccb..472da4b 100755
 --- a/target/linux/ramips/base-files/etc/diag.sh
