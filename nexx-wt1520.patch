@@ -1,3 +1,29 @@
+diff --git a/target/linux/ramips/base-files/etc/board.d/01_leds b/target/linux/ramips/base-files/etc/board.d/01_leds
+index 01e2363..1806ff2 100755
+--- a/target/linux/ramips/base-files/etc/board.d/01_leds
++++ b/target/linux/ramips/base-files/etc/board.d/01_leds
+@@ -112,6 +112,9 @@ case $board in
+ 	hlk-rm04)
+ 		set_wifi_led "rt2800pci-phy0::radio"
+ 		;;
++	nexx-wt1520)
++		set_wifi_led "rt2800pci-phy0::radio"
++		;;
+ 	all0239-3g|\
+ 	hw550-3g)
+ 		set_usb_led "hw550-3g:green:usb"
+diff --git a/target/linux/ramips/base-files/etc/board.d/02_network b/target/linux/ramips/base-files/etc/board.d/02_network
+index e027b3b..765d398 100755
+--- a/target/linux/ramips/base-files/etc/board.d/02_network
++++ b/target/linux/ramips/base-files/etc/board.d/02_network
+@@ -103,6 +103,7 @@ ramips_setup_interfaces()
+ 	dir-320-b1 | \
+ 	dir-615-h1 | \
+ 	hlk-rm04 | \
++	nexx-wt1520 | \
+ 	mzk-w300nh2 | \
+ 	mzk-750dhp)
+ 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 diff --git a/target/linux/ramips/base-files/etc/diag.sh b/target/linux/ramips/base-files/etc/diag.sh
 index 9ad7ccb..472da4b 100755
 --- a/target/linux/ramips/base-files/etc/diag.sh
@@ -40,10 +66,10 @@ index 407c218..8ff2da6 100755
  	m4 | \
 diff --git a/target/linux/ramips/dts/NEXXWT1520.dts b/target/linux/ramips/dts/NEXXWT1520.dts
 new file mode 100644
-index 0000000..dc0ad32
+index 0000000..ab85486
 --- /dev/null
 +++ b/target/linux/ramips/dts/NEXXWT1520.dts
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,108 @@
 +/dts-v1/;
 +
 +/include/ "rt5350.dtsi"
@@ -71,7 +97,7 @@ index 0000000..dc0ad32
 +			m25p80@0 {
 +				#address-cells = <1>;
 +				#size-cells = <1>;
-+				compatible = "w25q32";
++				compatible = "gd25q64";
 +				reg = <0 0>;
 +				linux,modalias = "m25p80", "s25fl064k";
 +				spi-max-frequency = <10000000>;
@@ -126,26 +152,52 @@ index 0000000..dc0ad32
 +	ohci@101c1000 {
 +		status = "okay";
 +	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		poll-interval = <20>;
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++		power {
++			label = "nexx-wt1520:white:power";
++			gpios = <&gpio0 0 1>;
++		};
++	};
++
++        gpio_export {
++                compatible = "gpio-export";
++                #size-cells = <0>;
++                usb-mode {
++                        gpio-export,name = "usb-mode";
++                        gpio-export,output = <0>;
++                        gpios = <&gpio0 18 0>;
++                };
++        };
 +};
 diff --git a/target/linux/ramips/image/Makefile b/target/linux/ramips/image/Makefile
-index 35057e4..fcb91af 100644
+index 35057e4..6f7c51c 100644
 --- a/target/linux/ramips/image/Makefile
 +++ b/target/linux/ramips/image/Makefile
-@@ -434,6 +434,13 @@ define BuildFirmware/HLKRM04/initramfs
+@@ -434,6 +434,14 @@ define BuildFirmware/HLKRM04/initramfs
  endef
  Image/Build/Profile/HLKRM04=$(call BuildFirmware/HLKRM04/$(1),$(1),hlk-rm04,HLKRM04,HLK-RM02)
-
+ 
 +BuildFirmware/NEXXWT1520/squashfs=$(call BuildFirmware/Default4M/squashfs,$(1),$(2),$(3),$(4))
 +define BuildFirmware/NEXXWT1520/initramfs
 +	$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
++	#mkhilinkfw -e -i$(call imgname,$(1),$(2))-uImage.bin -o $(call imgname,$(1),$(2))-factory.bin;
 +endef
 +
 +Image/Build/Profile/NEXXWT1520=$(call BuildFirmware/NEXXWT1520/$(1),$(1),nexx-wt1520,NEXXWT1520,NEXXWT1520)
 +
  Image/Build/Profile/M3=$(call BuildFirmware/Poray4M/$(1),$(1),m3,M3)
-
+ 
  Image/Build/Profile/M4=$(call BuildFirmware/PorayDualSize/$(1),$(1),m4,M4)
-@@ -598,6 +605,7 @@ define Image/Build/Profile/Default
+@@ -598,6 +606,7 @@ define Image/Build/Profile/Default
  	$(call Image/Build/Profile/FREESTATION5,$(1))
  #	$(call Image/Build/Profile/HG255D,$(1))
  	$(call Image/Build/Profile/HLKRM04,$(1))
@@ -155,7 +207,7 @@ index 35057e4..fcb91af 100644
  	$(call Image/Build/Profile/M3,$(1))
 diff --git a/target/linux/ramips/rt305x/profiles/nexx.mk b/target/linux/ramips/rt305x/profiles/nexx.mk
 new file mode 100644
-index 0000000..45d81ec
+index 0000000..74edce9
 --- /dev/null
 +++ b/target/linux/ramips/rt305x/profiles/nexx.mk
 @@ -0,0 +1,17 @@
@@ -167,8 +219,7 @@ index 0000000..45d81ec
 +#
 +
 +define Profile/NEXXWT1520
-+	NAME:=Nexx WT1520
-+	PACKAGES:=kmod-usb2
++	NAME:=NEXX WT-1520
 +endef
 +
 +define Profile/NEXXWT1520/Description
@@ -176,3 +227,4 @@ index 0000000..45d81ec
 +endef
 +
 +$(eval $(call Profile,NEXXWT1520))
++
